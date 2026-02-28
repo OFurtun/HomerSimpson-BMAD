@@ -1,0 +1,29 @@
+# Sprint Status Template
+# Homer discovers backlog stories from this file.
+#
+# STATUS DEFINITIONS:
+# ==================
+# Epic Status:
+#   - backlog: Epic not yet started
+#   - in-progress: Epic actively being worked on
+#   - done: All stories in epic completed
+#
+# Story Status:
+#   - backlog: Story only exists in epic file (Homer will create the story file)
+#   - ready-for-dev: Story file created (Homer transitions to this on success)
+#   - in-progress: Developer actively working on implementation
+#   - done: Story completed
+
+development_status:
+  # Epic 1: Your First Epic (3 stories)
+  epic-1: backlog
+  1-1-first-story-slug: backlog
+  1-2-second-story-slug: backlog
+  1-3-third-story-slug: backlog
+  epic-1-retrospective: optional
+
+  # Epic 2: Your Second Epic (2 stories)
+  epic-2: backlog
+  2-1-another-story: backlog
+  2-2-yet-another-story: backlog
+  epic-2-retrospective: optional
