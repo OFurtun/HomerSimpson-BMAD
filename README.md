@@ -43,27 +43,27 @@ homer.sh (bash loop)           <- Zero intelligence. Parses signals, calls proce
 ```
                               /homer --epic N
                                     |
-                    +-------------------------------+
+                    +--------------------------------+
                     |          SKILL.md              |
-                    |                               |
+                    |                                |
                     |  Validate prerequisites        |
                     |  Discover backlog stories      |
                     |  Initialize PROGRESS.md        |
-                    +---------------+---------------+
+                    +---------------+----------------+
                                     |
-     +------------------------------v------------------------------+
-     |                       homer.sh                              |
-     |                  "Zero intelligence bash loop"              |
-     |                                                             |
-     |  +--------------------------------------------------------+ |
-     |  |  OUTER LOOP - for each backlog story (sequential)      | |
-     |  |                                                        | |
-     |  |  Read PROGRESS.md -> skip created/blocked -> start     | |
-     |  |                                                        | |
-     |  |  +--------------------------------------------------+  | |
+     +------------------------------v-------------------------------+
+     |                       homer.sh                               |
+     |                  "Zero intelligence bash loop"               |
+     |                                                              |
+     |  +---------------------------------------------------------+ |
+     |  |  OUTER LOOP - for each backlog story (sequential)       | |
+     |  |                                                         | |
+     |  |  Read PROGRESS.md -> skip created/blocked -> start      | |
+     |  |                                                         | |
+     |  |  +---------------------------------------------------+  | |
      |  |  |  INNER LOOP - continuations (max 3 per story)     |  | |
-     |  |  |                                                  |  | |
-     |  |  |  +--------------------------------------+        |  | |
+     |  |  |                                                   |  | |
+     |  |  |  +---------------------------------------+        |  | |
      |  |  |  |    Fresh claude -p  (Homer)           |        |  | |
      |  |  |  |    Zero context accumulation          |        |  | |
      |  |  |  |                                       |        |  | |
@@ -71,8 +71,8 @@ homer.sh (bash loop)           <- Zero intelligence. Parses signals, calls proce
      |  |  |  |   * Epics file (full epic context)    |        |  | |
      |  |  |  |   * Architecture docs (full shards)   |        |  | |
      |  |  |  |   * Previous story file               |        |  | |
-     |  |  |  |   * PROGRESS.md (relay baton)          |        |  | |
-     |  |  |  |   * Web (latest versions, advisories)  |        |  | |
+     |  |  |  |   * PROGRESS.md (relay baton)         |        |  | |
+     |  |  |  |   * Web (latest versions, advisories) |        |  | |
      |  |  |  |                                       |        |  | |
      |  |  |  |  Does:                                |        |  | |
      |  |  |  |   * 6-step analysis process           |        |  | |
@@ -94,27 +94,27 @@ homer.sh (bash loop)           <- Zero intelligence. Parses signals, calls proce
      |  |               |                |                        | |
      |  |               v                v                        | |
      |  |          next story         HALT (default)              | |
-     |  +--------------------------------------------------------+ |
-     +-------------------------------------------------------------+
+     |  +---------------------------------------------------------+ |
+     +--------------------------------------------------------------+
 
-              +----------- Shared State -----------+
-              |                                     |
-              |  PROGRESS.md       sprint-status    |
-              |  (relay baton)     (.yaml)          |
-              |  +------------+   +--------------+  |
+              +----------- Shared State -------------+
+              |                                      |
+              |  PROGRESS.md       sprint-status     |
+              |  (relay baton)     (.yaml)           |
+              |  +-------------+   +--------------+  |
               |  | Story table |   | backlog      |  |
               |  | Relay notes |   | ready-for-dev|  |
               |  | Attempts    |   | in-progress  |  |
-              |  +------------+   +--------------+  |
-              |                                     |
-              |  BLOCKERS.md       story-N.M-record |
-              |  (failure log)     (creation log)   |
-              |  +------------+   +--------------+  |
+              |  +-------------+   +--------------+  |
+              |                                      |
+              |  BLOCKERS.md       story-N.M-record  |
+              |  (failure log)     (creation log)    |
+              |  +-------------+   +--------------+  |
               |  | Issue       |   | Shards read  |  |
               |  | Attempted   |   | Web research |  |
               |  | Needs       |   | Issues fixed |  |
-              |  +------------+   +--------------+  |
-              +-------------------------------------+
+              |  +-------------+   +--------------+  |
+              +--------------------------------------+
 ```
 
 Each `claude -p` invocation is a **disposable worker** with zero memory. The only things that survive between runs are **PROGRESS.md** (the relay baton) and the **story files** (the output). Homer reads docs and writes stories — no code, no git, no tests.
@@ -124,15 +124,15 @@ Each `claude -p` invocation is a **disposable worker** with zero memory. The onl
 Homer and Ralph are complementary:
 
 ```
-Homer (SM)                  Ralph (Dev)                Review
-  |                           |                         |
-  +-- Create story files ---> +-- Execute stories ----> +-- Code review
-  |   (backlog -> ready)      |   (ready -> done)       |   (fresh context)
-  |                           |                         |
-  +-- Batch or one-at-a-time  +-- Sequential            +-- Per story
-  |   Fresh context per story |   Fresh context per story|
-  |   Reads: epics, arch      |   Reads: story file      |
-  |   Writes: story files     |   Writes: code, commits  |
+Homer (SM)                  Ralph (Dev)                 Review
+  |                           |                           |
+  +-- Create story files ---> +-- Execute stories ------> +-- Code review
+  |   (backlog -> ready)      |   (ready -> done)         |   (fresh context)
+  |                           |                           |
+  +-- Batch or one-at-a-time  +-- Sequential              +-- Per story
+  |   Fresh context per story |   Fresh context per story |
+  |   Reads: epics, arch      |   Reads: story file       |
+  |   Writes: story files     |   Writes: code, commits   |
 ```
 
 ## Installation
