@@ -91,6 +91,7 @@ For every element mentioned in or relevant to the story, extract from the archit
   - `USING (tenant_id = current_tenant_id())` — read filter
   - `WITH CHECK (tenant_id = current_tenant_id())` — write filter
 - **Every deferred entity**: Check the "Deferred to Epics & Stories" list in entity-model.md. Note when no canonical DDL exists (story must define its own schema).
+- **Every table the story touches** (INSERT, SELECT, UPDATE, DELETE, JOIN): Verify the table either (a) was created in a prior story/epic, or (b) is being created in THIS story with a migration task. If neither, check if canonical DDL exists in the architecture shards — if yes, add a migration task with the embedded DDL. If no canonical DDL exists either, **flag this as a story blocker** ("table X has no canonical DDL and no prior migration") — do NOT invent a schema.
 - **Every config table**: Verify ALL column defaults against the authoritative architecture shard.
 - **Every infrastructure role**: Check for job roles, service accounts, etc.
 - **Every test pattern**: Find the CANONICAL test approach for the story's component types. For UI components, verify @testing-library/svelte render pattern is specified in infrastructure.md. For DB operations, verify RLS test pattern from cross-cutting.md. Embed exact test code snippets in the story's Testing Approach section — never write "write unit tests" without specifying the exact library, import, and assertion pattern.
@@ -271,6 +272,13 @@ After writing the story file, verify it with three passes. Fix all CRITICAL and 
 - For every RLS policy: verify ENABLE + FORCE + USING + WITH CHECK
 - For every index: verify it matches architecture specification
 - **CRITICAL**: Any mismatch = fix immediately
+- **Table Existence Verification** — for every table the story's code INSERTs into, SELECTs from, UPDATEs, DELETEs from, or JOINs:
+  1. Was this table created in a prior story within the same epic? (check sprint-status.yaml story ordering)
+  2. Was this table created in a completed prior epic? (check existing migrations in `supabase/migrations/`)
+  3. Does THIS story include a migration task to create it?
+  4. If none of the above: check if canonical DDL exists in the architecture shards.
+     - If canonical DDL exists → **CRITICAL BUG** — add a migration task with the embedded DDL. The dev agent cannot create a table that no story defines.
+     - If no canonical DDL exists → **BLOCKER** — flag the story as blocked. The architecture needs to define this table's schema first. Do NOT invent a schema.
 
 ### Pass 2 — Requirements Verification
 - Re-read the epic's ACs for this story
